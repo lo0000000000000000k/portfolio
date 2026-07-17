@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description:
     'B.Tech CSE (AI & ML) undergraduate specializing in Machine Learning, Computer Vision, and Network Security. Building intelligent systems with Python, TensorFlow, and C++.',
   keywords: ['Harshit Malik', 'AI Developer', 'ML Engineer', 'Portfolio', 'Machine Learning', 'Python', 'TensorFlow'],
-  authors: [{ name: 'Harshit Malik', url: 'https://github.com/harshitmalik' }],
+  authors: [{ name: 'Harshit Malik', url: 'https://github.com/lo0000000000000000k' }],
   openGraph: {
     title: 'Harshit Malik — AI/ML Developer Portfolio',
     description: 'B.Tech CSE (AI & ML) undergraduate building intelligent systems.',
