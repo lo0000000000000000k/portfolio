@@ -139,7 +139,7 @@ export default function Navbar() {
 
           {/* CTA */}
           <a
-            href="mailto:harshitmalik110@gmail.com"
+            href="mailto:teddywhiff@gmail.com"
             className="hidden md:block font-jetbrains text-[0.7rem] font-semibold tracking-[0.08em] px-4 py-[7px] rounded-lg transition-all duration-200 hover:-translate-y-0.5"
             style={{
               color: isDark ? '#1c1108' : '#fff8f0',

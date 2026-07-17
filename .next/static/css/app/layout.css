@@ -961,6 +961,9 @@ video {
 .top-\[90px\] {
   top: 90px;
 }
+.bottom-8 {
+  bottom: 2rem;
+}
 .z-0 {
   z-index: 0;
 }
@@ -990,6 +993,9 @@ video {
 }
 .z-\[999\] {
   z-index: 999;
+}
+.z-\[9999\] {
+  z-index: 9999;
 }
 .mx-auto {
   margin-left: auto;

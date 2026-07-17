@@ -1,6 +1,8 @@
 'use client';
-import { memo } from 'react';
-import { motion } from 'framer-motion';
+import { memo, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const EMAIL = 'teddywhiff@gmail.com';
 
 const LINKS = [
   {
@@ -21,18 +23,27 @@ const LINKS = [
       </svg>
     ),
   },
-  {
-    label: 'EMAIL',
-    href: 'mailto:harshitmalik110@gmail.com',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.904.732-1.636 1.636-1.636h.749L12 10.73l9.615-6.909h.749A1.636 1.636 0 0124 5.457z" />
-      </svg>
-    ),
-  },
 ];
 
 const Contact = memo(function Contact() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+    } catch {
+      // Fallback for older browsers
+      const el = document.createElement('textarea');
+      el.value = EMAIL;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  }, []);
+
   return (
     <footer
       id="contact"
@@ -42,6 +53,37 @@ const Contact = memo(function Contact() {
         background: 'linear-gradient(0deg, rgba(0,212,255,0.02), transparent)',
       }}
     >
+      {/* Toast notification */}
+      <AnimatePresence>
+        {copied && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: 30, scale: 0.85 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2.5 px-5 py-3 rounded-xl font-jetbrains text-[0.75rem] tracking-[0.1em] pointer-events-none"
+            style={{
+              background: 'var(--bg-dark)',
+              border: '1px solid var(--neon-cyan)',
+              color: 'var(--neon-cyan)',
+              boxShadow: '0 0 24px rgba(20,184,166,0.25), 0 8px 32px rgba(0,0,0,0.15)',
+            }}
+          >
+            <motion.svg
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.1, type: 'spring', stiffness: 500 }}
+              width="15" height="15" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </motion.svg>
+            EMAIL COPIED
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Status badge */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -72,7 +114,7 @@ const Contact = memo(function Contact() {
           WebkitTextFillColor: 'transparent',
         }}
       >
-        Let's Build Something Great
+        Let&apos;s Build Something Great
       </motion.h2>
 
       <motion.p
@@ -94,11 +136,12 @@ const Contact = memo(function Contact() {
         transition={{ delay: 0.3, duration: 0.6 }}
         className="flex gap-4 justify-center flex-wrap mb-8"
       >
+        {/* Regular social links */}
         {LINKS.map((link) => (
           <motion.a
             key={link.label}
             href={link.href}
-            target={link.href.startsWith('mailto') ? undefined : '_blank'}
+            target="_blank"
             rel="noopener noreferrer"
             whileHover={{ y: -2, borderColor: 'rgba(0,212,255,0.3)', color: 'var(--neon-blue)', background: 'rgba(0,212,255,0.05)' }}
             transition={{ duration: 0.2 }}
@@ -109,6 +152,81 @@ const Contact = memo(function Contact() {
             {link.label}
           </motion.a>
         ))}
+
+        {/* Email — click to copy */}
+        <motion.button
+          id="contact-email-copy-btn"
+          onClick={handleCopyEmail}
+          aria-label="Copy email address to clipboard"
+          whileHover={{
+            y: -2,
+            borderColor: 'rgba(0,212,255,0.3)',
+            color: 'var(--neon-blue)',
+            background: 'rgba(0,212,255,0.05)',
+          }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center gap-2 font-jetbrains text-[0.72rem] tracking-[0.1em] px-[18px] py-2.5 rounded-[10px] cursor-pointer"
+          style={{
+            color: copied ? 'var(--neon-cyan)' : 'var(--text-secondary)',
+            border: `1px solid ${copied ? 'rgba(20,184,166,0.45)' : 'var(--border-glass)'}`,
+            background: copied ? 'rgba(20,184,166,0.07)' : 'transparent',
+            transition: 'color 0.3s ease, border-color 0.3s ease, background 0.3s ease',
+          }}
+        >
+          {/* Icon swaps between mail and checkmark */}
+          <AnimatePresence mode="wait" initial={false}>
+            {copied ? (
+              <motion.svg
+                key="check"
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                exit={{ scale: 0 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </motion.svg>
+            ) : (
+              <motion.svg
+                key="mail"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                transition={{ type: 'spring', stiffness: 400 }}
+                width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+              >
+                <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.904.732-1.636 1.636-1.636h.749L12 10.73l9.615-6.909h.749A1.636 1.636 0 0124 5.457z" />
+              </motion.svg>
+            )}
+          </AnimatePresence>
+
+          {/* Label swaps between EMAIL and COPIED! */}
+          <AnimatePresence mode="wait" initial={false}>
+            {copied ? (
+              <motion.span
+                key="copied-label"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+              >
+                COPIED!
+              </motion.span>
+            ) : (
+              <motion.span
+                key="email-label"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+              >
+                EMAIL
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </motion.div>
 
       {/* Copyright */}

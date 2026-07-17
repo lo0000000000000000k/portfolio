@@ -13,7 +13,7 @@ const COMMANDS: Record<string, () => string[]> = {
   skills: () => ['  <span style="color:#00d4ff">Lang:</span> Python · C++ · Java · SQL', '  <span style="color:#9b59ff">ML:</span> TensorFlow · YOLO · NumPy · Pandas'],
   projects: () => PROJECTS.map((p, i) => `  <span style="color:#00ffcc">${i + 1}. ${p.name}</span>`),
   chess: () => ["  ♟ Rating: 1450 Blitz"],
-  contact: () => ['  <span style="color:#00d4ff">Email:</span> harshitmalik110@gmail.com'],
+  contact: () => ['  <span style="color:#00d4ff">Email:</span> teddywhiff@gmail.com'],
   spotify: () => ['  <span style="color:#1db954">♫</span> Blinding Lights — The Weeknd'],
   clear: () => [],
 };
