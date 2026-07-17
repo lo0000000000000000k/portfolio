@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, memo, useCallback } from 'react';
 import { motion, useAnimation, useMotionValue, AnimatePresence } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 
 interface Card {
   id: string; emoji: string; category: string;
@@ -8,7 +9,7 @@ interface Card {
   color: string; pin: string; rotate: number; size: 'sm'|'md'|'lg';
 }
 const CARDS: Card[] = [
-  { id:'music',    emoji:'🎵', category:'Listening To',       front:'Tell me your playlist!',        back:'Drop your fav playlist here',                  color:'#1db954', pin:'#f43f5e', rotate:-3, size:'md' },
+  { id:'music',    emoji:'🎵', category:'Listening To',       front:'Blinding Lights',               back:'Drop your fav playlist here',                  color:'#1db954', pin:'#f43f5e', rotate:-3, size:'md' },
   { id:'food',     emoji:'🍕', category:'Food Obsession',     front:'Current food obsession...',      back:'What are you eating too much of?',              color:'#e8924f', pin:'#8b5cf6', rotate:2,  size:'sm' },
   { id:'watching', emoji:'📺', category:'Watching',           front:'Currently binge-watching...',    back:'Anime? Series? Let me know!',                   color:'#8b5cf6', pin:'#14b8a6', rotate:-1, size:'md' },
   { id:'travel',   emoji:'✈️', category:'Wanna Go',           front:'Dream destination...',           back:'Where do you want to go next?',                 color:'#14b8a6', pin:'#f43f5e', rotate:3,  size:'sm' },
@@ -156,10 +157,131 @@ function Pin({ color }: { color:string }) {
   );
 }
 
+/* ── Music Card Back — playlist submission form ── */
+type SendState = 'idle' | 'sending' | 'sent' | 'error';
+
+function MusicCardBack({ color }: { color: string }) {
+  const [value, setValue] = useState('');
+  const [state, setState] = useState<SendState>('idle');
+
+  const handleSend = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const trimmed = value.trim();
+    if (!trimmed || state === 'sending') return;
+
+    setState('sending');
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          name: 'Portfolio Visitor',
+          email: 'teddywhiff@gmail.com',
+          message: trimmed,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
+      );
+      setState('sent');
+      setValue('');
+      setTimeout(() => setState('idle'), 3500);
+    } catch {
+      setState('error');
+      setTimeout(() => setState('idle'), 3000);
+    }
+  }, [value, state]);
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-2 w-full px-1" onClick={e => e.stopPropagation()}>
+      <span style={{ fontSize: 22 }}>🎵</span>
+      <p className="font-grotesk text-[0.65rem] text-center font-semibold leading-snug"
+        style={{ color: 'rgba(255,255,255,0.95)' }}>
+        Drop your fav playlist!
+      </p>
+
+      <AnimatePresence mode="wait">
+        {state === 'sent' ? (
+          <motion.div
+            key="sent"
+            initial={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.7, opacity: 0 }}
+            className="flex flex-col items-center gap-1"
+          >
+            <span style={{ fontSize: 20 }}>✅</span>
+            <p className="font-jetbrains text-[0.55rem] tracking-wider text-center"
+              style={{ color: 'rgba(255,255,255,0.9)' }}>
+              Sent to Harshit!
+            </p>
+          </motion.div>
+        ) : state === 'error' ? (
+          <motion.div
+            key="error"
+            initial={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.7, opacity: 0 }}
+            className="flex flex-col items-center gap-1"
+          >
+            <span style={{ fontSize: 18 }}>⚠️</span>
+            <p className="font-jetbrains text-[0.5rem] tracking-wider text-center"
+              style={{ color: 'rgba(255,255,255,0.8)' }}>
+              Failed — try again
+            </p>
+          </motion.div>
+        ) : (
+          <motion.form
+            key="form"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            onSubmit={handleSend}
+            className="flex flex-col gap-1.5 w-full"
+          >
+            <input
+              type="text"
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              placeholder="playlist name or link..."
+              maxLength={200}
+              className="w-full rounded-lg px-2.5 py-1.5 font-grotesk text-[0.6rem] outline-none placeholder:opacity-60"
+              style={{
+                background: 'rgba(255,255,255,0.18)',
+                border: '1px solid rgba(255,255,255,0.35)',
+                color: '#fff',
+                backdropFilter: 'blur(4px)',
+              }}
+            />
+            <motion.button
+              type="submit"
+              disabled={!value.trim() || state === 'sending'}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full rounded-lg py-1.5 font-jetbrains text-[0.55rem] tracking-widest font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: 'rgba(255,255,255,0.92)',
+                color: color,
+                cursor: value.trim() ? 'pointer' : 'not-allowed',
+              }}
+            >
+              {state === 'sending' ? 'SENDING...' : 'SEND 🎧'}
+            </motion.button>
+          </motion.form>
+        )}
+      </AnimatePresence>
+      <div className="mt-0.5 font-jetbrains text-[0.42rem] tracking-widest opacity-40 text-white">
+        CLICK TO FLIP BACK
+      </div>
+    </div>
+  );
+}
+
 /* ── Polaroid Card ── */
 function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; onFlip:()=>void }) {
   const w = { sm:162, md:200, lg:242 }[card.size];
   const h = { sm:160, md:188, lg:218 }[card.size];
+
+  const isMusicCard = card.id === 'music';
+
   return (
     <motion.div drag dragMomentum={false}
       className="absolute cursor-grab active:cursor-grabbing"
@@ -175,6 +297,7 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
           transition={{ duration:0.5, ease:[0.4,0,0.2,1] }}
           onClick={onFlip}
         >
+          {/* FRONT */}
           <div className="absolute inset-0 rounded-xl flex flex-col overflow-hidden"
             style={{ backfaceVisibility:'hidden', background:'#fffcf7', boxShadow:'0 6px 20px rgba(0,0,0,0.11),0 1px 0 rgba(255,255,255,0.9) inset', padding:'10px 10px 8px' }}>
             <div className="flex-1 rounded-lg flex flex-col items-center justify-center gap-1 mb-2"
@@ -182,14 +305,38 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
               <span style={{ fontSize:card.size==='lg'?38:28 }}>{card.emoji}</span>
               <span className="font-jetbrains text-[0.48rem] tracking-[0.2em] text-center px-1" style={{ color:card.color }}>{card.category.toUpperCase()}</span>
             </div>
-            <div className="font-grotesk text-[0.68rem] text-center leading-snug" style={{ color:'#3d2818' }}>{card.front}</div>
-            <div className="text-center mt-1"><span className="font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span></div>
+            {isMusicCard ? (
+              <div className="flex flex-col items-center gap-0.5">
+                <div className="font-grotesk text-[0.72rem] text-center leading-snug font-bold" style={{ color:'#1db954' }}>
+                  {card.front}
+                </div>
+                <div className="font-jetbrains text-[0.48rem] text-center" style={{ color:'#6b5040' }}>
+                  — The Weeknd
+                </div>
+                <div className="text-center mt-0.5">
+                  <span className="font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="font-grotesk text-[0.68rem] text-center leading-snug" style={{ color:'#3d2818' }}>{card.front}</div>
+                <div className="text-center mt-1"><span className="font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span></div>
+              </>
+            )}
           </div>
+
+          {/* BACK */}
           <div className="absolute inset-0 rounded-xl flex flex-col items-center justify-center p-3"
             style={{ backfaceVisibility:'hidden', transform:'rotateY(180deg)', background:`linear-gradient(135deg,${card.color}ee,${card.color}aa)`, boxShadow:`0 6px 24px ${card.color}55` }}>
-            <span style={{ fontSize:24 }}>{card.emoji}</span>
-            <p className="font-grotesk text-[0.7rem] text-center leading-snug mt-2 font-medium" style={{ color:'rgba(255,255,255,0.96)' }}>{card.back}</p>
-            <div className="mt-2 font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'rgba(255,255,255,0.45)' }}>CLICK TO FLIP BACK</div>
+            {isMusicCard ? (
+              <MusicCardBack color={card.color} />
+            ) : (
+              <>
+                <span style={{ fontSize:24 }}>{card.emoji}</span>
+                <p className="font-grotesk text-[0.7rem] text-center leading-snug mt-2 font-medium" style={{ color:'rgba(255,255,255,0.96)' }}>{card.back}</p>
+                <div className="mt-2 font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'rgba(255,255,255,0.45)' }}>CLICK TO FLIP BACK</div>
+              </>
+            )}
           </div>
         </motion.div>
       </div>
@@ -212,15 +359,12 @@ const VibesBoard = memo(function VibesBoard() {
     if (animatingRef.current) return;
     animatingRef.current = true;
 
-    // Show sweat + angry burst immediately
     setSweat(true);
     setAngryBorder(true);
     setAngry(true);
 
-    // Board angry shake
     boardCtrl.start({ x:[0,-8,8,-6,6,-3,3,0], rotate:[0,-1,1,-0.5,0.5,0], transition:{ duration:0.5 } });
 
-    // After 1 second: stop angry, legs shake
     await new Promise(r => setTimeout(r, 1000));
     setAngry(false);
     setAngryBorder(false);
@@ -230,16 +374,10 @@ const VibesBoard = memo(function VibesBoard() {
       rightLegCtrl.start({ rotate:[0,20,-16,12,-8,4,0], y:[0,-8,4,-3,1,0], transition:{ duration:0.55 } }),
     ]);
 
-    // Reset
     await new Promise(r => setTimeout(r, 300));
     setSweat(false);
     animatingRef.current = false;
   }, [boardCtrl, leftLegCtrl, rightLegCtrl]);
-
-  const idleArmAnim = {
-    animate: { rotate:[0,-10,0,-6,0] },
-    transition: { repeat:Infinity, duration:3.5, ease:'easeInOut' as const },
-  };
 
   return (
     <section id="vibes" className="relative z-[2]">
@@ -257,30 +395,22 @@ const VibesBoard = memo(function VibesBoard() {
           </p>
         </motion.div>
 
-        {/* Character wrapper — extra space for limbs */}
         <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
           className="relative"
           style={{ paddingLeft:72, paddingRight:72, paddingBottom:100 }}
         >
-          {/* LEFT ARM — idle sway, draggable */}
           <DraggableArm top={170} left={0} onStretchEnd={handleStretchEnd}/>
-
-          {/* RIGHT ARM — same style, mirrored, draggable */}
           <DraggableArm top={170} right={0} mirrored onStretchEnd={handleStretchEnd}/>
 
-          {/* LEFT LEG */}
           <motion.div animate={leftLegCtrl}
             style={{ position:'absolute', bottom:2, left:'32%', transformOrigin:'top center', zIndex:10 }}>
             <LegSVG/>
           </motion.div>
-
-          {/* RIGHT LEG */}
           <motion.div animate={rightLegCtrl}
             style={{ position:'absolute', bottom:2, left:'51%', transformOrigin:'top center', zIndex:10 }}>
             <LegSVG mirrored/>
           </motion.div>
 
-          {/* THE BOARD */}
           <motion.div animate={boardCtrl}
             className="relative rounded-2xl"
             style={{
@@ -302,13 +432,11 @@ const VibesBoard = memo(function VibesBoard() {
               zIndex:5,
             }}
           >
-            {/* Overflow container for sweat/angry */}
             <div style={{ position:'absolute', inset:0, overflow:'hidden', borderRadius:'inherit', pointerEvents:'none' }}>
               <SweatDrops active={sweat}/>
             </div>
             <AngryBurst active={angry}/>
 
-            {/* Cards */}
             <div style={{ position:'absolute', inset:0, overflow:'hidden', borderRadius:'inherit' }}>
               {CARDS.map((card, i) => {
                 const [left, top] = POSITIONS[i] ?? [80+i*170, 70];
@@ -334,3 +462,4 @@ const VibesBoard = memo(function VibesBoard() {
 });
 
 export default VibesBoard;
+
