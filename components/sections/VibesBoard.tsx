@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, memo, useCallback } from 'react';
+import { useState, useRef, memo, useCallback, useEffect } from 'react';
 import { motion, useAnimation, useMotionValue, AnimatePresence } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 
@@ -7,20 +7,20 @@ interface Card {
   id: string; emoji: string; category: string;
   front: string; back: string;
   color: string; pin: string; rotate: number; size: 'sm'|'md'|'lg';
+  image?: string;
 }
 const CARDS: Card[] = [
-  { id:'music',    emoji:'🎵', category:'Listening To',       front:'Blinding Lights',               back:'Drop your fav playlist here',                  color:'#1db954', pin:'#f43f5e', rotate:-3, size:'md' },
-  { id:'food',     emoji:'🍕', category:'Food Obsession',     front:'Current food obsession...',      back:'What are you eating too much of?',              color:'#e8924f', pin:'#8b5cf6', rotate:2,  size:'sm' },
-  { id:'watching', emoji:'📺', category:'Watching',           front:'Currently binge-watching...',    back:'Anime? Series? Let me know!',                   color:'#8b5cf6', pin:'#14b8a6', rotate:-1, size:'md' },
-  { id:'travel',   emoji:'✈️', category:'Wanna Go',           front:'Dream destination...',           back:'Where do you want to go next?',                 color:'#14b8a6', pin:'#f43f5e', rotate:3,  size:'sm' },
-  { id:'shower',   emoji:'💭', category:'Shower Thought',     front:'Latest random thought...',       back:"What's on your mind at 3am?",                  color:'#f43f5e', pin:'#e8924f', rotate:-2, size:'lg' },
-  { id:'game',     emoji:'🎮', category:'Playing',            front:'Losing hours to...',             back:'What game has you hooked?',                    color:'#ec4899', pin:'#8b5cf6', rotate:1,  size:'sm' },
-  { id:'spotify',  emoji:'🎧', category:'Spotify',            front:'Coding soundtrack...',           back:"Check the widget top-left for what's playing!", color:'#1db954', pin:'#14b8a6', rotate:-4, size:'md' },
-  { id:'reading',  emoji:'📖', category:'Reading (non-tech)', front:'Page-turning right now...',      back:"Any non-tech book you're reading?",             color:'#d97706', pin:'#ec4899', rotate:2,  size:'sm' },
+  { id:'music',    emoji:'🎵', category:'Listening To',       front:'Blinding Lights',          back:'Drop your fav playlist here',       color:'#1db954', pin:'#f43f5e', rotate:-3, size:'md' },
+  { id:'food',     emoji:'🍕', category:'Food Obsession',     front:'Chole Bhature 🫶',          back:'What are you eating too much of?',  color:'#e8924f', pin:'#8b5cf6', rotate:2,  size:'sm', image:'/chole-bhature.png' },
+  { id:'watching', emoji:'📺', category:'Watching',           front:'The Mentalist',             back:'Anime? Series? Let me know!',       color:'#8b5cf6', pin:'#14b8a6', rotate:-1, size:'md', image:'/the-mentalist.jpg' },
+  { id:'travel',   emoji:'✈️', category:'Wanna Go',           front:'Switzerland 🏔️',            back:'Where do you want to go next?',    color:'#14b8a6', pin:'#f43f5e', rotate:3,  size:'sm', image:'/switzerland.jpg' },
+  { id:'shower',   emoji:'💭', category:'Shower Thought',     front:'',                          back:"What's on your mind at 3am?",      color:'#f43f5e', pin:'#e8924f', rotate:-2, size:'lg', image:'/thinker.jpg' },
+  { id:'game',     emoji:'🎮', category:'Playing',            front:'Black Myth: Wukong 🐒',     back:'What game has you hooked?',        color:'#ec4899', pin:'#8b5cf6', rotate:1,  size:'sm', image:'/black-myth.jpg' },
+  { id:'reading',  emoji:'📖', category:'Reading (non-tech)', front:'A Song of Ice and Fire 🐉',  back:"Any non-tech book you're reading?", color:'#d97706', pin:'#ec4899', rotate:2,  size:'sm', image:'/books.jpg' },
 ];
 const POSITIONS: [number,number][] = [
-  [28,52],[228,22],[438,42],[648,32],
-  [18,278],[218,262],[448,252],[638,252],
+  [12,48],[282,15],[550,40],[818,24],
+  [60,310],[340,290],[620,305],
 ];
 
 /* ── Cartoon Arm SVG (white glove + sleeve) ── */
@@ -157,6 +157,54 @@ function Pin({ color }: { color:string }) {
   );
 }
 
+/* ── Shower Thoughts — rotating funny one-liners ── */
+const SHOWER_THOUGHTS = [
+  "8 is just 0 wearing a belt 🥋",
+  "If you're waiting for the waiter... aren't you the waiter? 🤔",
+  "A staircase is just a ramp with trust issues",
+  "Sleeping is a free trial of death 💀",
+  "Every odd number has the letter E in it. OnE, thrEE, fivE...",
+  "We say 'sleep like a baby' but babies cry every 2hrs 😭",
+  "If you drop soap, is the floor clean or is the soap dirty?",
+  "Technically, when you clean a vacuum, you become the vacuum",
+  "You've never seen your own face — only reflections & photos lie",
+  "Why do we park in a driveway and drive on a parkway? 🚗",
+  "A mirror has never seen your face. Only your reflection's face.",
+  "Your skeleton is always wet 🦴",
+];
+
+function ShowerThoughtFront() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIdx(prev => (prev + 1) % SHOWER_THOUGHTS.length);
+        setVisible(true);
+      }, 400);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.p
+        key={idx}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : -8 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.35, ease: 'easeInOut' }}
+        className="font-grotesk text-[0.66rem] text-center leading-snug italic px-1"
+        style={{ color: '#3d2818' }}
+      >
+        &ldquo;{SHOWER_THOUGHTS[idx]}&rdquo;
+      </motion.p>
+    </AnimatePresence>
+  );
+}
+
 /* ── Music Card Back — playlist submission form ── */
 type SendState = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -277,10 +325,11 @@ function MusicCardBack({ color }: { color: string }) {
 
 /* ── Polaroid Card ── */
 function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; onFlip:()=>void }) {
-  const w = { sm:162, md:200, lg:242 }[card.size];
-  const h = { sm:160, md:188, lg:218 }[card.size];
+  const w = { sm:218, md:260, lg:300 }[card.size];
+  const h = { sm:210, md:245, lg:280 }[card.size];
 
   const isMusicCard = card.id === 'music';
+  const isShowerCard = card.id === 'shower';
 
   return (
     <motion.div drag dragMomentum={false}
@@ -300,30 +349,62 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
           {/* FRONT */}
           <div className="absolute inset-0 rounded-xl flex flex-col overflow-hidden"
             style={{ backfaceVisibility:'hidden', background:'#fffcf7', boxShadow:'0 6px 20px rgba(0,0,0,0.11),0 1px 0 rgba(255,255,255,0.9) inset', padding:'10px 10px 8px' }}>
-            <div className="flex-1 rounded-lg flex flex-col items-center justify-center gap-1 mb-2"
-              style={{ background:`${card.color}12`, border:`1px solid ${card.color}35` }}>
-              <span style={{ fontSize:card.size==='lg'?38:28 }}>{card.emoji}</span>
-              <span className="font-jetbrains text-[0.48rem] tracking-[0.2em] text-center px-1" style={{ color:card.color }}>{card.category.toUpperCase()}</span>
-            </div>
-            {isMusicCard ? (
-              <div className="flex flex-col items-center gap-0.5">
-                <div className="font-grotesk text-[0.72rem] text-center leading-snug font-bold" style={{ color:'#1db954' }}>
-                  {card.front}
+
+            {card.image ? (
+              /* Image card — photo fills the top, label at bottom */
+              <>
+                <div className="flex-1 rounded-lg overflow-hidden mb-2 relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={card.image}
+                    alt={card.front}
+                    className="w-full h-full object-cover"
+                    style={{ borderRadius: '8px' }}
+                  />
+                  <div className="absolute bottom-0 inset-x-0 px-1 py-0.5 flex justify-center"
+                    style={{ background: `${card.color}cc`, borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px' }}>
+                    <span className="font-jetbrains text-[0.62rem] tracking-[0.18em] text-white">{card.category.toUpperCase()}</span>
+                  </div>
                 </div>
-                <div className="font-jetbrains text-[0.48rem] text-center" style={{ color:'#6b5040' }}>
-                  — The Weeknd
-                </div>
-                <div className="text-center mt-0.5">
-                  <span className="font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
-                </div>
-              </div>
+                <div className="font-grotesk text-[0.9rem] text-center leading-snug font-semibold" style={{ color:'#3d2818' }}>{card.front}</div>
+                <div className="text-center mt-1"><span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span></div>
+              </>
             ) : (
               <>
-                <div className="font-grotesk text-[0.68rem] text-center leading-snug" style={{ color:'#3d2818' }}>{card.front}</div>
-                <div className="text-center mt-1"><span className="font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span></div>
+                <div className="flex-1 rounded-lg flex flex-col items-center justify-center gap-1 mb-2"
+                  style={{ background:`${card.color}12`, border:`1px solid ${card.color}35` }}>
+                  <span style={{ fontSize:card.size==='lg'?46:34 }}>{card.emoji}</span>
+                  <span className="font-jetbrains text-[0.62rem] tracking-[0.2em] text-center px-1" style={{ color:card.color }}>{card.category.toUpperCase()}</span>
+                </div>
+                {isMusicCard ? (
+                  <div className="flex flex-col items-center gap-0.5">
+                    <div className="font-grotesk text-[0.95rem] text-center leading-snug font-bold" style={{ color:'#1db954' }}>
+                      {card.front}
+                    </div>
+                    <div className="font-jetbrains text-[0.62rem] text-center" style={{ color:'#6b5040' }}>
+                      — The Weeknd
+                    </div>
+                    <div className="text-center mt-0.5">
+                      <span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
+                    </div>
+                  </div>
+                ) : isShowerCard ? (
+                  <div className="flex flex-col items-center gap-1">
+                    <ShowerThoughtFront />
+                    <div className="text-center mt-1">
+                    <span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="font-grotesk text-[0.9rem] text-center leading-snug" style={{ color:'#3d2818' }}>{card.front}</div>
+                    <div className="text-center mt-1"><span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span></div>
+                  </>
+                )}
               </>
             )}
           </div>
+
 
           {/* BACK */}
           <div className="absolute inset-0 rounded-xl flex flex-col items-center justify-center p-3"
@@ -332,9 +413,9 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
               <MusicCardBack color={card.color} />
             ) : (
               <>
-                <span style={{ fontSize:24 }}>{card.emoji}</span>
-                <p className="font-grotesk text-[0.7rem] text-center leading-snug mt-2 font-medium" style={{ color:'rgba(255,255,255,0.96)' }}>{card.back}</p>
-                <div className="mt-2 font-jetbrains text-[0.46rem] tracking-widest" style={{ color:'rgba(255,255,255,0.45)' }}>CLICK TO FLIP BACK</div>
+                <span style={{ fontSize:30 }}>{card.emoji}</span>
+                <p className="font-grotesk text-[0.9rem] text-center leading-snug mt-2 font-medium" style={{ color:'rgba(255,255,255,0.96)' }}>{card.back}</p>
+                <div className="mt-2 font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'rgba(255,255,255,0.55)' }}>CLICK TO FLIP BACK</div>
               </>
             )}
           </div>
@@ -414,7 +495,7 @@ const VibesBoard = memo(function VibesBoard() {
           <motion.div animate={boardCtrl}
             className="relative rounded-2xl"
             style={{
-              height:500,
+              height:630,
               backgroundImage:`
                 linear-gradient(rgba(200,149,42,0.07) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(200,149,42,0.07) 1px, transparent 1px),
