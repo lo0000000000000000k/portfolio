@@ -22,23 +22,7 @@ const Hero = memo(function Hero() {
       className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-[120px] pb-20 text-center overflow-hidden z-[2]"
     >
 
-      {/* Available badge */}
-      <motion.div {...fadeUp(0.1)}>
-        <div
-          className="inline-flex items-center gap-2 font-jetbrains text-[0.72rem] tracking-[0.3em] px-[18px] py-1.5 rounded-full mb-8"
-          style={{
-            color: 'var(--neon-cyan)',
-            background: 'rgba(0,255,204,0.06)',
-            border: '1px solid rgba(0,255,204,0.2)',
-          }}
-        >
-          <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse-dot"
-            style={{ background: 'var(--neon-cyan)' }}
-          />
-          AVAILABLE FOR OPPORTUNITIES
-        </div>
-      </motion.div>
+
 
       {/* Name — plain bold ink, no glow */}
       <motion.h1
