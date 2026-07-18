@@ -129,19 +129,7 @@ const Projects = memo(function Projects() {
                     ))}
                   </div>
 
-                  {/* Links */}
-                  <div className="flex gap-2.5">
-                    <a
-                      href={project.gh}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-jetbrains text-[0.68rem] tracking-[0.05em] flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all duration-200 hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.04)]"
-                      style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-glass)' }}
-                    >
-                      <GitHubIcon /> GitHub
-                    </a>
 
-                  </div>
                 </div>
               </GlassCard>
             </motion.div>

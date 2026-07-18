@@ -453,9 +453,7 @@ const VibesBoard = memo(function VibesBoard() {
           <h2 className="font-syne font-bold" style={{ fontSize:'clamp(1.8rem,4vw,2.6rem)', background:'linear-gradient(135deg,#1c1108,#e8924f)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
             My Vibes Board
           </h2>
-          <p className="mt-2 font-grotesk text-[0.95rem]" style={{ color:'var(--text-secondary)' }}>
-            Click cards to flip · Try pulling the arms 😤
-          </p>
+
         </motion.div>
 
         <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
