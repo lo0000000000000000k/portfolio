@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic';
 import { useTypingEffect } from '@/hooks/useTypingEffect';
 import { HERO_PHRASES } from '@/lib/data';
 
-const Terminal = dynamic(() => import('@/components/ui/Terminal'), { ssr: false });
+const Terminal  = dynamic(() => import('@/components/ui/Terminal'),  { ssr: false });
+const SplitText = dynamic(() => import('@/components/ui/SplitText'), { ssr: false });
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 40 },
@@ -24,18 +25,25 @@ const Hero = memo(function Hero() {
 
 
 
-      {/* Name — plain bold ink, no glow */}
-      <motion.h1
-        {...fadeUp(0.3)}
+      <SplitText
+        tag="h1"
+        text="HARSHIT MALIK"
         className="font-syne font-extrabold mb-5 leading-[1.05]"
         style={{
           fontSize: 'clamp(3rem, 8vw, 6.5rem)',
           color: 'var(--text-primary)',
           letterSpacing: '-0.01em',
         }}
-      >
-        HARSHIT MALIK
-      </motion.h1>
+        delay={80}
+        duration={0.9}
+        ease="power4.out"
+        splitType="chars"
+        from={{ opacity: 0, y: 60 }}
+        to={{ opacity: 1, y: 0 }}
+        threshold={0.1}
+        rootMargin="0px"
+        textAlign="center"
+      />
 
       {/* Typing subtitle */}
       <motion.div
