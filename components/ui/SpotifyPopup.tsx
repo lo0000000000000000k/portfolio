@@ -10,6 +10,7 @@ interface NowPlaying {
   artist?: string;
   albumImage?: string | null;
   songUrl?: string;
+  previewUrl?: string | null;
   progressMs?: number;
   durationMs?: number;
   notSetup?: boolean;
@@ -21,6 +22,7 @@ interface RecentTrack {
   artist?: string;
   albumImage?: string | null;
   songUrl?: string;
+  previewUrl?: string | null;
   playedAt?: string; // ISO string
   durationMs?: number;
 }
@@ -130,6 +132,9 @@ const SpotifyPopup = memo(function SpotifyPopup() {
   const [recent, setRecent]           = useState<RecentTrack | null>(null);
   // Local progress in ms (interpolated between polls)
   const [localProgress, setLocalProgress] = useState(0);
+  // Audio preview player
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const nowRef      = useRef<NowPlaying | null>(null);
   const progressRef = useRef(0);
@@ -223,6 +228,44 @@ const SpotifyPopup = memo(function SpotifyPopup() {
 
   const progressPct = durationMs > 0 ? Math.min((localProgress / durationMs) * 100, 100) : 0;
   const hasData     = !notSetup && (displayTitle !== 'Nothing Playing');
+
+  // Prefer live preview_url, fall back to recent
+  const displayPreview = isPlaying
+    ? (nowPlaying?.previewUrl ?? null)
+    : (recent?.previewUrl ?? null);
+
+  // Toggle preview audio playback
+  const togglePreview = useCallback(() => {
+    if (!displayPreview) return;
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio(displayPreview);
+      audioRef.current.volume = 0.6;
+      audioRef.current.onended = () => setAudioPlaying(false);
+    }
+
+    if (audioPlaying) {
+      audioRef.current.pause();
+      setAudioPlaying(false);
+    } else {
+      // If src changed (song changed), reset
+      if (audioRef.current.src !== displayPreview) {
+        audioRef.current.src = displayPreview;
+        audioRef.current.currentTime = 0;
+      }
+      audioRef.current.play().then(() => setAudioPlaying(true)).catch(() => {});
+    }
+  }, [displayPreview, audioPlaying]);
+
+  // Stop audio when popup closes or track changes
+  useEffect(() => {
+    if (audioRef.current && audioPlaying) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setAudioPlaying(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [displayPreview]);
 
   if (phase === 'hidden') return null;
 
@@ -351,9 +394,48 @@ const SpotifyPopup = memo(function SpotifyPopup() {
                   </p>
                 </div>
               )}
+
+              {/* ── Preview play button ── */}
+              {hasData && displayPreview && (
+                <div className="px-4 pb-4">
+                  <motion.button
+                    onClick={togglePreview}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-xl font-jetbrains text-[0.62rem] tracking-widest font-bold"
+                    style={{
+                      background: audioPlaying
+                        ? 'rgba(29,185,84,0.12)'
+                        : 'linear-gradient(135deg,#1db954,#17a349)',
+                      color: audioPlaying ? '#1db954' : '#fff',
+                      border: audioPlaying ? '1px solid rgba(29,185,84,0.4)' : 'none',
+                    }}
+                  >
+                    {audioPlaying ? '⏸ PAUSE PREVIEW' : '▶ PLAY PREVIEW'}
+                  </motion.button>
+                  {/* mini waveform when playing */}
+                  {audioPlaying && (
+                    <div className="flex items-center justify-center gap-[3px] mt-2">
+                      {[0,1,2,3,4].map(i => (
+                        <motion.div
+                          key={i}
+                          className="w-[3px] rounded-full"
+                          style={{ background: '#1db954' }}
+                          animate={{ height: ['4px','14px','4px'] }}
+                          transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.1 }}
+                        />
+                      ))}
+                      <span className="font-jetbrains text-[0.5rem] ml-2" style={{ color: '#1db954' }}>
+                        30s PREVIEW
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
+
 
         {/* ── Mini widget pill ────────────────────────────────────────────── */}
         {phase === 'widget' && (

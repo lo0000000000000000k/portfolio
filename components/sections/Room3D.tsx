@@ -104,7 +104,7 @@ function OverlayPanel({ type, onClose }: { type: OverlayKey; onClose: () => void
     >
       <motion.div className="w-full max-w-md rounded-2xl p-6 max-h-[80%] overflow-y-auto"
         initial={{ scale: 0.88, y: 20 }} animate={{ scale: 1, y: 0 }}
-        style={{ background: 'rgba(8,15,30,0.97)', border: `1px solid ${c.color}33`, boxShadow: `0 0 50px ${c.color}18` }}
+        style={{ background: 'rgba(8,15,30,0.97)', border: `1px solid ${c.color}33`, boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-1">

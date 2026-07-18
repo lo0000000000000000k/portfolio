@@ -53,6 +53,7 @@ export async function GET() {
       artist:      data.item.artists.map((a: { name: string }) => a.name).join(', '),
       albumImage:  data.item.album.images[0]?.url ?? null,
       songUrl:     data.item.external_urls.spotify,
+      previewUrl:  data.item.preview_url ?? null,
       progress:    data.progress_ms,
       duration:    data.item.duration_ms,
     });

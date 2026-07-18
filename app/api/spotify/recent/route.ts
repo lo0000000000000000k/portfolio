@@ -54,7 +54,8 @@ export async function GET() {
       artist:     track.artists.map((a: { name: string }) => a.name).join(', '),
       albumImage: track.album.images[0]?.url ?? null,
       songUrl:    track.external_urls.spotify,
-      playedAt,   // e.g. "2026-05-17T10:30:00.000Z"
+      previewUrl: track.preview_url ?? null,
+      playedAt,
       duration:   track.duration_ms,
     });
   } catch {

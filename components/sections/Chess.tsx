@@ -220,7 +220,7 @@ const Chess = memo(function Chess() {
                           <div className="text-6xl animate-solved-king">♚</div>
                           <div className="font-syne text-xl font-bold tracking-[0.08em]" style={{ color: 'var(--neon-cyan)' }}>PUZZLE SOLVED!</div>
                           <div className="font-jetbrains text-[0.75rem]" style={{ color: 'var(--text-secondary)' }}>Solved in {formatTime(timerSec)} 🔥</div>
-                          <button onClick={resetPuzzle} className="font-jetbrains text-[0.75rem] tracking-[0.1em] px-5 py-2.5 rounded-lg mt-2 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, var(--neon-purple), var(--neon-pink))', color: '#fff', boxShadow: '0 0 20px rgba(155,89,255,0.4)' }}>
+                          <button onClick={resetPuzzle} className="font-jetbrains text-[0.75rem] tracking-[0.1em] px-5 py-2.5 rounded-lg mt-2 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, var(--neon-purple), var(--neon-pink))', color: '#fff' }}>
                             NEXT PUZZLE
                           </button>
                         </motion.div>
@@ -279,7 +279,7 @@ const Chess = memo(function Chess() {
               </GlassCard>
             </motion.div>
 
-            <button onClick={showSolution} className="font-jetbrains text-[0.75rem] tracking-[0.1em] py-3 rounded-xl w-full transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, var(--neon-purple), var(--neon-pink))', color: '#fff', boxShadow: '0 0 20px rgba(155,89,255,0.3)' }}>
+            <button onClick={showSolution} className="font-jetbrains text-[0.75rem] tracking-[0.1em] py-3 rounded-xl w-full transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, var(--neon-purple), var(--neon-pink))', color: '#fff' }}>
               SHOW SOLUTION
             </button>
             <button onClick={resetPuzzle} className="font-jetbrains text-[0.75rem] tracking-[0.1em] py-3 rounded-xl w-full transition-all duration-200" style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-glass)', background: 'transparent' }}>

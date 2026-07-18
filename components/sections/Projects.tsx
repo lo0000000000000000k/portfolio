@@ -69,24 +69,30 @@ const Projects = memo(function Projects() {
                       backgroundSize: '30px 30px',
                     }}
                   />
-                  <motion.div
-                    className="relative z-10 text-[3.5rem] select-none"
-                    style={{ filter: `drop-shadow(0 0 20px ${project.color1})` }}
-                    whileHover={{ scale: 1.15, rotate: 5 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                  >
-                    {project.icon}
-                  </motion.div>
 
                   {/* Period badge */}
                   <div
-                    className="absolute top-3 right-3 font-jetbrains text-[0.6rem] tracking-[0.1em] px-2 py-1 rounded-md"
-                    style={{
-                      color: project.color1,
-                      background: `${project.color1}15`,
-                      border: `1px solid ${project.color1}30`,
-                    }}
+                    className="absolute top-3 right-3 font-jetbrains text-[0.6rem] tracking-[0.1em] px-2 py-1 rounded-md flex items-center gap-1.5"
+                    style={
+                      project.period.includes('Present')
+                        ? {
+                            color: '#00ff88',
+                            background: 'rgba(0,255,136,0.1)',
+                            border: '1px solid rgba(0,255,136,0.35)',
+                          }
+                        : {
+                            color: project.color1,
+                            background: `${project.color1}15`,
+                            border: `1px solid ${project.color1}30`,
+                          }
+                    }
                   >
+                    {project.period.includes('Present') && (
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#00ff88' }} />
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#00ff88' }} />
+                      </span>
+                    )}
                     {project.period}
                   </div>
                 </div>
@@ -134,18 +140,7 @@ const Projects = memo(function Projects() {
                     >
                       <GitHubIcon /> GitHub
                     </a>
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-jetbrains text-[0.68rem] tracking-[0.05em] flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all duration-200 hover:bg-[rgba(0,212,255,0.1)]"
-                      style={{
-                        color: 'var(--neon-blue)',
-                        border: '1px solid rgba(0,212,255,0.3)',
-                      }}
-                    >
-                      ↗ Live Demo
-                    </a>
+
                   </div>
                 </div>
               </GlassCard>

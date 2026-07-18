@@ -89,7 +89,7 @@ const About = memo(function About() {
                     {/* Timeline dot */}
                     <div
                       className="absolute -left-[29px] top-1 w-3 h-3 rounded-full border-2"
-                      style={{ background: edu.color, borderColor: 'var(--bg-void)', boxShadow: `0 0 8px ${edu.color}` }}
+                      style={{ background: edu.color, borderColor: 'var(--bg-void)' }}
                     />
                     <div
                       className="font-jetbrains text-[0.62rem] tracking-[0.15em] mb-0.5"
@@ -142,7 +142,7 @@ const About = memo(function About() {
                         background: `${skillGroup.color}10`,
                         border: `1px solid ${skillGroup.color}30`,
                       }}
-                      whileHover={{ boxShadow: `0 0 12px ${skillGroup.color}40` }}
+                      whileHover={{ background: `${skillGroup.color}18`, borderColor: `${skillGroup.color}55` }}
                     >
                       {skill}
                     </motion.span>

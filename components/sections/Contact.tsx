@@ -67,7 +67,7 @@ const Contact = memo(function Contact() {
               background: 'var(--bg-dark)',
               border: '1px solid var(--neon-cyan)',
               color: 'var(--neon-cyan)',
-              boxShadow: '0 0 24px rgba(20,184,166,0.25), 0 8px 32px rgba(0,0,0,0.15)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
             }}
           >
             <motion.svg
@@ -95,7 +95,7 @@ const Contact = memo(function Contact() {
       >
         <span
           className="w-1.5 h-1.5 rounded-full animate-pulse-dot"
-          style={{ background: 'var(--neon-cyan)', boxShadow: '0 0 8px var(--neon-cyan)' }}
+          style={{ background: 'var(--neon-cyan)' }}
         />
         ONLINE &amp; AVAILABLE
       </motion.div>

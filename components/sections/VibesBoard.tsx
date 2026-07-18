@@ -10,7 +10,6 @@ interface Card {
   image?: string;
 }
 const CARDS: Card[] = [
-  { id:'music',    emoji:'🎵', category:'Listening To',       front:'Blinding Lights',          back:'Drop your fav playlist here',       color:'#1db954', pin:'#f43f5e', rotate:-3, size:'md' },
   { id:'food',     emoji:'🍕', category:'Food Obsession',     front:'Chole Bhature 🫶',          back:'What are you eating too much of?',  color:'#e8924f', pin:'#8b5cf6', rotate:2,  size:'sm', image:'/chole-bhature.png' },
   { id:'watching', emoji:'📺', category:'Watching',           front:'The Mentalist',             back:'Anime? Series? Let me know!',       color:'#8b5cf6', pin:'#14b8a6', rotate:-1, size:'md', image:'/the-mentalist.jpg' },
   { id:'travel',   emoji:'✈️', category:'Wanna Go',           front:'Switzerland 🏔️',            back:'Where do you want to go next?',    color:'#14b8a6', pin:'#f43f5e', rotate:3,  size:'sm', image:'/switzerland.jpg' },
@@ -19,7 +18,7 @@ const CARDS: Card[] = [
   { id:'reading',  emoji:'📖', category:'Reading (non-tech)', front:'A Song of Ice and Fire 🐉',  back:"Any non-tech book you're reading?", color:'#d97706', pin:'#ec4899', rotate:2,  size:'sm', image:'/books.jpg' },
 ];
 const POSITIONS: [number,number][] = [
-  [12,48],[282,15],[550,40],[818,24],
+  [12,48],[262,18],[528,38],
   [60,310],[340,290],[620,305],
 ];
 
@@ -328,7 +327,6 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
   const w = { sm:218, md:260, lg:300 }[card.size];
   const h = { sm:210, md:245, lg:280 }[card.size];
 
-  const isMusicCard = card.id === 'music';
   const isShowerCard = card.id === 'shower';
 
   return (
@@ -366,7 +364,9 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
                     <span className="font-jetbrains text-[0.62rem] tracking-[0.18em] text-white">{card.category.toUpperCase()}</span>
                   </div>
                 </div>
-                <div className="font-grotesk text-[0.9rem] text-center leading-snug font-semibold" style={{ color:'#3d2818' }}>{card.front}</div>
+                <div className="font-grotesk text-[0.9rem] text-center leading-snug font-semibold" style={{ color:'#3d2818' }}>
+                  {isShowerCard ? <ShowerThoughtFront /> : card.front}
+                </div>
                 <div className="text-center mt-1"><span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span></div>
               </>
             ) : (
@@ -376,23 +376,11 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
                   <span style={{ fontSize:card.size==='lg'?46:34 }}>{card.emoji}</span>
                   <span className="font-jetbrains text-[0.62rem] tracking-[0.2em] text-center px-1" style={{ color:card.color }}>{card.category.toUpperCase()}</span>
                 </div>
-                {isMusicCard ? (
-                  <div className="flex flex-col items-center gap-0.5">
-                    <div className="font-grotesk text-[0.95rem] text-center leading-snug font-bold" style={{ color:'#1db954' }}>
-                      {card.front}
-                    </div>
-                    <div className="font-jetbrains text-[0.62rem] text-center" style={{ color:'#6b5040' }}>
-                      — The Weeknd
-                    </div>
-                    <div className="text-center mt-0.5">
-                      <span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
-                    </div>
-                  </div>
-                ) : isShowerCard ? (
+                {isShowerCard ? (
                   <div className="flex flex-col items-center gap-1">
                     <ShowerThoughtFront />
                     <div className="text-center mt-1">
-                    <span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
+                      <span className="font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'#c0a890' }}>CLICK TO FLIP</span>
                     </div>
                   </div>
                 ) : (
@@ -405,20 +393,14 @@ function PolaroidCard({ card, flipped, onFlip }:{ card:Card; flipped:boolean; on
             )}
           </div>
 
-
           {/* BACK */}
           <div className="absolute inset-0 rounded-xl flex flex-col items-center justify-center p-3"
             style={{ backfaceVisibility:'hidden', transform:'rotateY(180deg)', background:`linear-gradient(135deg,${card.color}ee,${card.color}aa)`, boxShadow:`0 6px 24px ${card.color}55` }}>
-            {isMusicCard ? (
-              <MusicCardBack color={card.color} />
-            ) : (
-              <>
-                <span style={{ fontSize:30 }}>{card.emoji}</span>
-                <p className="font-grotesk text-[0.9rem] text-center leading-snug mt-2 font-medium" style={{ color:'rgba(255,255,255,0.96)' }}>{card.back}</p>
-                <div className="mt-2 font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'rgba(255,255,255,0.55)' }}>CLICK TO FLIP BACK</div>
-              </>
-            )}
+            <span style={{ fontSize:30 }}>{card.emoji}</span>
+            <p className="font-grotesk text-[0.9rem] text-center leading-snug mt-2 font-medium" style={{ color:'rgba(255,255,255,0.96)' }}>{card.back}</p>
+            <div className="mt-2 font-jetbrains text-[0.58rem] tracking-widest" style={{ color:'rgba(255,255,255,0.55)' }}>CLICK TO FLIP BACK</div>
           </div>
+
         </motion.div>
       </div>
     </motion.div>

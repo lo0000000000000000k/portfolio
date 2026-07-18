@@ -21,29 +21,6 @@ const Hero = memo(function Hero() {
       id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-[120px] pb-20 text-center overflow-hidden z-[2]"
     >
-      {/* Ambient gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.07) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 20% 80%, rgba(155,89,255,0.06) 0%, transparent 50%),
-            radial-gradient(ellipse 50% 40% at 80% 60%, rgba(0,255,204,0.04) 0%, transparent 50%)
-          `,
-        }}
-      />
-
-      {/* Mouse glow */}
-      <div
-        id="mouse-glow"
-        className="fixed pointer-events-none z-[1] rounded-full"
-        style={{
-          width: 600,
-          height: 600,
-          background: 'radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%)',
-          transform: 'translate(-50%,-50%)',
-        }}
-      />
 
       {/* Available badge */}
       <motion.div {...fadeUp(0.1)}>
@@ -63,16 +40,14 @@ const Hero = memo(function Hero() {
         </div>
       </motion.div>
 
-      {/* Name */}
+      {/* Name — plain bold ink, no glow */}
       <motion.h1
         {...fadeUp(0.3)}
         className="font-syne font-extrabold mb-5 leading-[1.05]"
         style={{
           fontSize: 'clamp(3rem, 8vw, 6.5rem)',
-          background: 'linear-gradient(135deg, #ffffff 0%, var(--neon-blue) 50%, var(--neon-purple) 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          filter: 'drop-shadow(0 0 40px rgba(0,212,255,0.2))',
+          color: 'var(--text-primary)',
+          letterSpacing: '-0.01em',
         }}
       >
         HARSHIT MALIK
@@ -101,8 +76,8 @@ const Hero = memo(function Hero() {
           className="font-jetbrains text-[0.8rem] font-semibold tracking-[0.1em] px-[30px] py-[13px] rounded-[10px] transition-all duration-300 hover:-translate-y-[3px]"
           style={{
             color: 'var(--bg-void)',
-            background: 'linear-gradient(135deg, var(--neon-blue), var(--neon-purple))',
-            boxShadow: '0 0 24px rgba(0,212,255,0.35), 0 4px 20px rgba(0,0,0,0.3)',
+            background: 'var(--neon-blue)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
           }}
         >
           VIEW PROJECTS

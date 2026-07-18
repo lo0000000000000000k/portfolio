@@ -80,7 +80,7 @@ export const PROJECTS: Project[] = [
     tech: ['Python', 'TensorFlow', 'OpenCV', 'Deep Learning', 'Computer Vision'],
     gh: 'https://github.com/lo0000000000000000k',
     demo: '#',
-    period: 'Jan 2025 – May 2025',
+    period: 'Jan 2026 – Present',
   },
   {
     name: 'Football Player Detection — YOLO',
@@ -102,7 +102,7 @@ export const PROJECTS: Project[] = [
     tech: ['Next.js', 'TypeScript', 'Stockfish', 'Python', 'chess.js'],
     gh: 'https://github.com/lo0000000000000000k',
     demo: '#',
-    period: '2025',
+    period: '2026',
   },
 ];
 

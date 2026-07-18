@@ -73,26 +73,41 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  background: var(--bg-void);
+  /* ── notebook-paper grid background (light mode) ── */
+  background-color: #f7f2e8;
+  background-image:
+    repeating-linear-gradient(#d6cdb8 0px, transparent 1px, transparent 60px, #d6cdb8 60px),
+    repeating-linear-gradient(90deg, #d6cdb8 0px, transparent 1px, transparent 60px, #d6cdb8 60px),
+    repeating-linear-gradient(#e8e0d0 0px, transparent 1px, transparent 12px, #e8e0d0 12px),
+    repeating-linear-gradient(90deg, #e8e0d0 0px, transparent 1px, transparent 12px, #e8e0d0 12px);
+  background-attachment: local;
   color: var(--text-primary);
   overflow-x: hidden;
   cursor: default;
-  transition: background 0.4s ease, color 0.4s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Light mode radial blobs */
+/* ── Light mode: flat matte notebook grid ── */
 [data-theme="light"] body,
 body {
+  background-color: #f7f2e8;
   background-image:
-    radial-gradient(ellipse at 0% 0%,   rgba(232,146,79,0.07)  0%, transparent 40%),
-    radial-gradient(ellipse at 100% 0%, rgba(139,92,246,0.05) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 100%,rgba(20,184,166,0.04)  0%, transparent 40%);
-  background-attachment: fixed;
+    repeating-linear-gradient(#d6cdb8 0px, transparent 1px, transparent 60px, #d6cdb8 60px),
+    repeating-linear-gradient(90deg, #d6cdb8 0px, transparent 1px, transparent 60px, #d6cdb8 60px),
+    repeating-linear-gradient(#e8e0d0 0px, transparent 1px, transparent 12px, #e8e0d0 12px),
+    repeating-linear-gradient(90deg, #e8e0d0 0px, transparent 1px, transparent 12px, #e8e0d0 12px);
+  background-attachment: local;
 }
 
-/* Dark mode removes blobs (bg color is sufficient) */
+/* ── Dark mode: charcoal notebook grid ── */
 [data-theme="dark"] body {
-  background-image: none;
+  background-color: #1c1c1c;
+  background-image:
+    repeating-linear-gradient(#2e2e2e 0px, transparent 1px, transparent 60px, #2e2e2e 60px),
+    repeating-linear-gradient(90deg, #2e2e2e 0px, transparent 1px, transparent 60px, #2e2e2e 60px),
+    repeating-linear-gradient(#242424 0px, transparent 1px, transparent 12px, #242424 12px),
+    repeating-linear-gradient(90deg, #242424 0px, transparent 1px, transparent 12px, #242424 12px);
+  background-attachment: local;
 }
 
 /* Scrollbar */
@@ -101,19 +116,8 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(232,146,79,0.35); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
 
-/* Grid overlay */
-.grid-overlay {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(180,130,80,0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180,130,80,0.055) 1px, transparent 1px);
-  background-size: 70px 70px;
-}
-[data-theme="dark"] .grid-overlay {
-  background-image:
-    linear-gradient(rgba(232,146,79,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232,146,79,0.04) 1px, transparent 1px);
-}
+
+
 
 /* Reveal */
 .reveal-hidden { opacity:0; transform:translateY(30px); transition:opacity 0.7s ease,transform 0.7s ease; }
