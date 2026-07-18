@@ -18,9 +18,8 @@ const NAV_ITEMS = [
 ];
 
 const SOCIAL_ITEMS = [
-  { label: 'GitHub',   href: 'https://github.com/harshitm27'              },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/harshit-malik-ai'   },
-  { label: 'Email',    href: 'mailto:teddywhiff@gmail.com'                },
+  { label: 'GitHub',   href: 'https://github.com/lo0000000000000000k'              },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/harshitmalik015248/'      },
 ];
 
 function SunIcon() {

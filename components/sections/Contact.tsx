@@ -53,36 +53,7 @@ const Contact = memo(function Contact() {
         background: 'linear-gradient(0deg, rgba(0,212,255,0.02), transparent)',
       }}
     >
-      {/* Toast notification */}
-      <AnimatePresence>
-        {copied && (
-          <motion.div
-            key="toast"
-            initial={{ opacity: 0, y: 30, scale: 0.85 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2.5 px-5 py-3 rounded-xl font-jetbrains text-[0.75rem] tracking-[0.1em] pointer-events-none"
-            style={{
-              background: 'var(--bg-dark)',
-              border: '1px solid var(--neon-cyan)',
-              color: 'var(--neon-cyan)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
-            }}
-          >
-            <motion.svg
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.1, type: 'spring', stiffness: 500 }}
-              width="15" height="15" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </motion.svg>
-            EMAIL COPIED
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
       {/* Status badge */}
       <motion.div
